@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "hw-13"
+version = "1.2.0"
+description = ""
+authors = ["KyryloChalov <ks7977166@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.109.2"
+uvicorn = {extras = ["standard"], version = "^0.27.1"}
+sqlalchemy = "^2.0.27"
+psycopg2 = "^2.9.9"
+alembic = "^1.13.1"
+pydantic = {extras = ["email"], version = "^2.6.1"}
+phonenumbers = "^8.13.30"
+pydantic-extra-types = "^2.5.0"
+faker = "^23.2.1"
+libgravatar = "^1.0.4"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.9"
+fastapi-mail = "^1.4.1"
+redis = "^5.0.2"
+python-dotenv = "^1.0.1"
+fastapi-limiter = "^0.1.6"
+cloudinary = "^1.39.0"
+sphinx = "^7.2.6"
+
+
+[tool.poetry.group.dev.dependencies]
+sphinx = "^7.2.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
