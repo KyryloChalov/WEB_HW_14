@@ -35,7 +35,7 @@ def create_contacts(count: int) -> List[dict]:
                 "first_name": fake_data.first_name(),
                 "last_name": fake_data.last_name(),
                 "email": fake_data.free_email(),
-                "birthday": fake_data.date_of_birth(minimum_age=5, maximum_age=99),
+                "birthday": fake_data.date_of_birth(minimum_age=5, maximum_age=98),
                 "phone": f"+38{random.choice(PHONES_CODES)}{fake_data.msisdn()[6:]}",
                 "notes": notes,
             }

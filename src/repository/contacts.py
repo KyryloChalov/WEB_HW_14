@@ -52,6 +52,8 @@ async def read_contacts(db: Session = Depends(get_db), q: str = "", user = User)
                     Contact.first_name.ilike(f"%{q}%"),
                     Contact.last_name.ilike(f"%{q}%"),
                     Contact.email.ilike(f"%{q}%"),
+                    Contact.phone.ilike(f"%{q}%"),
+                    Contact.notes.ilike(f"%{q}%"),
                 ),
                 Contact.user_id == user.id
 
@@ -157,7 +159,7 @@ def birthdays_print(result, today_, days_):
 
     print(GRAY, end="")
     if result == []:
-        print(f"     there are no contacts whose birthday is in the next {days_} days")
+        print(f"     there are no contacts whose birthday is in the next {days_} days{RESET}")
     else:
         print('------------------------------------------------')
         print('  №   id    birthday   age     fullname        ')
@@ -169,7 +171,7 @@ def birthdays_print(result, today_, days_):
             print(f"{MAGENTA if res.birthday.day == today_.day else CYAN}", end=' ')
             print(f"{blank(3, age)}{GRAY}", end="  ")
             print(f"{WHITE}{res.first_name } {res.last_name}{GRAY}")
-        print('------------------------------------------------')
+        print('------------------------------------------------', RESET)
 
 
 async def get_next_days_birthdays(user_: User, db: Session = Depends(get_db), days_: int = 7):
@@ -187,6 +189,7 @@ async def get_next_days_birthdays(user_: User, db: Session = Depends(get_db), da
     today_ = datetime.today().date()
     # today_ = datetime(year=2023, month=12, day=27).date() # debugging
 
+    # print(contacts)
     result = []
     for num in range(days_+1):
 
@@ -200,6 +203,7 @@ async def get_next_days_birthdays(user_: User, db: Session = Depends(get_db), da
         for i in range(len(contacts)):
             result.append(contacts[i])
 
+    print(f"{contacts = }")
     birthdays_print(result, today_, days_) # debugging
     return result
 
