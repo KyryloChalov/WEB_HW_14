@@ -1,15 +1,17 @@
-from datetime import datetime, timedelta
+from typing import Optional
+import pickle
+import redis
+
+from jose import JWTError, jwt
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
 from passlib.context import CryptContext
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from src.conf.config import settings
+
 from src.database.db import get_db
 from src.repository import users as repository_users
-from typing import Optional
-import redis
-import pickle
+from src.conf.config import settings
 
 
 class Auth:
@@ -47,22 +49,6 @@ class Auth:
         """
         return self.pwd_context.hash(password)
 
-    def create_email_token(self, data: dict):
-        """
-        Create a token for email verification.
-
-        :param data: The data to encode into the token.
-        :type data: dict
-        :return: The encoded token.
-        :rtype: str
-        """
-        to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(days=7)
-        to_encode.update({"iat": datetime.utcnow(), "exp": expire})
-        token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
-        return token
-
-    # define a function to generate a new access token
     async def create_access_token(
         self, data: dict, expires_delta: Optional[float] = None
     ):
@@ -89,7 +75,6 @@ class Auth:
         )
         return encoded_access_token
 
-    # define a function to generate a new refresh token
     async def create_refresh_token(
         self, data: dict, expires_delta: Optional[float] = None
     ):
@@ -115,6 +100,21 @@ class Auth:
             to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
         )
         return encoded_refresh_token
+
+    def create_email_token(self, data: dict):
+        """
+        Create a token for email verification.
+
+        :param data: The data to encode into the token.
+        :type data: dict
+        :return: The encoded token.
+        :rtype: str
+        """
+        to_encode = data.copy()
+        expire = datetime.utcnow() + timedelta(days=7)
+        to_encode.update({"iat": datetime.utcnow(), "exp": expire})
+        token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        return token
 
     async def decode_refresh_token(self, refresh_token: str):
         """
@@ -200,7 +200,7 @@ class Auth:
             print(e)
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="Invalid token for email verification",
+                detail="Invalid token for email",
             )
 
 

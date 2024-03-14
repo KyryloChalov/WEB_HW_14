@@ -1,5 +1,5 @@
-from pydantic_settings import BaseSettings
-
+# from pydantic_settings import BaseSettings
+from pydantic_settings import SettingsConfigDict, BaseSettings
 
 class Settings(BaseSettings):
     postgres_db: str
@@ -14,14 +14,16 @@ class Settings(BaseSettings):
     mail_from: str
     mail_port: int
     mail_server: str
-    redis_host: str = "localhost"
-    redis_port: int = 6379
+    redis_host: str
+    redis_port: int
+    redis_password: str
     cloudinary_name: str
     cloudinary_api_key: str
     cloudinary_api_secret: str
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    # class Config:
+    #     env_file = ".env"
+    #     env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
-settings = Settings()
+settings = Settings()  

@@ -1,7 +1,7 @@
 import sys
 import os
 from dotenv import load_dotenv
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from fastapi import HTTPException
 
 import unittest
@@ -21,7 +21,7 @@ from src.repository.contacts import (
     find_contact,
     delete_contact,
     update_contact,
-    get_next_days_birthdays,
+    get_next_birthdays,
 )
 
 
@@ -214,38 +214,17 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
             )
         self.assertEqual(context.exception.status_code, 404)
 
-    # async def test_get_next_days_birthdays(self):
-        # contacts = [
-        #     Contact(
-        #         id=0,
-        #         birthday=date.today(),
-        #     ),
-        #     Contact(
-        #         id=1,
-        #         birthday=date.today() + timedelta(days=2),
-        #     ),
-        #     Contact(
-        #         id=2,
-        #         birthday=date.today() + timedelta(days=4),
-        #     ),
-        #     Contact(
-        #         id=3,
-        #         birthday=date.today() + timedelta(days=6),
-        #     ),
-        #     Contact(
-        #         id=4,
-        #         birthday=date.today() + timedelta(days=8),
-        #     ),
-        # ]
-        # mocked_contact = MagicMock()
-        # mocked_contact.scalars.return_value.all.return_value = contacts
-        # self.session.execute.return_value = mocked_contact
-        # # self.session.query().filter().all.return_value = contacts
-        # # self._print(contacts)
+    async def test_get_next_days_birthdays(self):
+        future_birthday_contacts = [
+            Contact(birthday=datetime.today().date()),
+            Contact(birthday=datetime.today().date() + timedelta(5)),
+        ]
+        self.session.query().filter().all.return_value = future_birthday_contacts
 
-        # result = await get_next_days_birthdays(self.user, self.session)
-        # # self._print(result)
-        # self.assertEqual(result, contacts)
+        future_birthdays = await get_next_birthdays(
+            user=self.user, db=self.session
+        )
+        self.assertEqual(future_birthdays, future_birthday_contacts)
 
 
 if __name__ == "__main__":

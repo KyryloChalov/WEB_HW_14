@@ -8,6 +8,7 @@ from src.schemas.contacts import ContactModel
 from src.static.colors import GRAY, RESET, CYAN, MAGENTA, WHITE, GRAY_BACK
 from typing import List
 
+# from sqlalchemy.ext.asyncio import AsyncSession
 
 async def create_contact(contact: ContactModel, user: User, db: Session = Depends(get_db)):
     """
@@ -174,7 +175,7 @@ def birthdays_print(result, today_, days_):
         print('------------------------------------------------', RESET)
 
 
-async def get_next_days_birthdays(user_: User, db: Session = Depends(get_db), days_: int = 7):
+async def get_next_days_birthdays(user: User, db: Session = Depends(get_db), days_: int = 7):
     """
     Get all contacts of an authorized user with birthdays in the next N days (default N = 7)
     Contacts are displayed sorted by date
@@ -189,13 +190,12 @@ async def get_next_days_birthdays(user_: User, db: Session = Depends(get_db), da
     today_ = datetime.today().date()
     # today_ = datetime(year=2023, month=12, day=27).date() # debugging
 
-    # print(contacts)
     result = []
     for num in range(days_+1):
 
         date_ = today_ + timedelta(num)
 
-        contacts = db.query(Contact).filter_by(user=user_).filter(
+        contacts = db.query(Contact).filter_by(user=user).filter(
             extract('month', Contact.birthday) == date_.month,
             extract('day', Contact.birthday) == date_.day
         ).where(Contact.birthday != None).all()
@@ -203,13 +203,45 @@ async def get_next_days_birthdays(user_: User, db: Session = Depends(get_db), da
         for i in range(len(contacts)):
             result.append(contacts[i])
 
-    print(f"{contacts = }")
+    print(f"{result = }")
     birthdays_print(result, today_, days_) # debugging
     return result
 
+async def get_next_birthdays(user: User, db: Session):
+    """
+    Retrieve all contacts with birthdays within next 7 days for a specific user.
 
+    :param user: The user to retrieve the contacts for.
+    :type user: User
+    :param db: The database session.
+    :type db: Session
+    :return: Contacts with birthdays within next 7 days.
+    :rtype: List[Contact]
+    """
+    today = datetime.now().date()
+    end_date = today + timedelta(days=7)
 
-# from sqlalchemy.ext.asyncio import AsyncSession
+    result = (
+        db.query(Contact)
+        .filter(
+            or_(
+                and_(
+                    extract("month", Contact.birthday) == today.month,
+                    extract("day", Contact.birthday) >= today.day,
+                    extract("day", Contact.birthday) <= end_date.day,
+                    Contact.user_id == user.id,
+                ),
+                and_(
+                    extract("month", Contact.birthday) == end_date.month,
+                    extract("day", Contact.birthday) <= end_date.day,
+                    Contact.user_id == user.id,
+                ),
+            )
+        )
+        .all()
+    )
+    return result
+
 
 async def get_contact_by_birthday(user_: User, db: Session, days_: int = 7):
     """
