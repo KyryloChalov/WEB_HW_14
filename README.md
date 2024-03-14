@@ -7,6 +7,5 @@
 2.
        py start.py
 
-
-uvicorn main:app --host localhost --port 8000 --reload
-
+3.
+       pytest ./tests 
