@@ -6,7 +6,8 @@ commands = [
     "poetry update package",
     "docker pull postgres",
     "docker-compose up -d",
-    "uvicorn main:app --host localhost --port 8000 --reload",
+    # "uvicorn main:app --host localhost --port 8000 --reload",
+    "pytest ./tests",
 ]
 
 
