@@ -36,11 +36,19 @@ app.add_middleware(
 )
 
 BASE_DIR = Path(__file__).parent
-# directory = BASE_DIR.joinpath("src").joinpath("static")
-# directory = BASE_DIR.joinpath("static")
-# app.mount("/static", StaticFiles(directory=directory), name="static")
-
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
+
+# static_directory = BASE_DIR.joinpath("src").joinpath("static")
+static_directory = BASE_DIR.joinpath("templates").joinpath("css")
+app.mount("/css", StaticFiles(directory=static_directory), name="css")
+
+image_directory = BASE_DIR.joinpath("templates").joinpath("image")
+app.mount("/image", StaticFiles(directory=image_directory), name="image")
+
+
+print(BASE_DIR)
+print(static_directory)
+print(image_directory)
 
 
 @app.get("/")
@@ -48,13 +56,12 @@ async def root(request: Request):
     """
     The greeting message.
     """
-    # return {"message": "Welcome! This is Homework 14"}
     return templates.TemplateResponse(
-        "index.html",
-        {
+        name="index.html",
+        context={
             "request": request,
             "message": "Welcome! This is Homework 14",
-            "about_app": "Contacts App main page",
+            "about_app": "REST API",
         },
     )
 

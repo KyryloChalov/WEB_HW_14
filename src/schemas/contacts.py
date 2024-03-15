@@ -2,7 +2,7 @@ from datetime import date
 # from pydantic import Field, BaseModel, EmailStr
 from pydantic import ConfigDict, Field, BaseModel, EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
-from src.static.constants import NAME_LEN, EMAIL_LEN, PHONE_LEN, NOTES_LEN
+from src.const.constants import NAME_LEN, EMAIL_LEN, PHONE_LEN, NOTES_LEN
 from typing import Optional
 
 

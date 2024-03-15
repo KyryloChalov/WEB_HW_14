@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from src.database.db import get_db
 from src.database.models import Contact, User
 from src.schemas.contacts import ContactModel
-from src.static.colors import GRAY, RESET, CYAN, MAGENTA, WHITE, GRAY_BACK
+from src.const.colors import GRAY, RESET, CYAN, MAGENTA, WHITE, GRAY_BACK
 from typing import List
 
 # from sqlalchemy.ext.asyncio import AsyncSession

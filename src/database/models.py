@@ -2,7 +2,7 @@ from datetime import date
 from sqlalchemy import Integer, String, DateTime, Date, func, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 from sqlalchemy.sql.schema import ForeignKey
-from src.static.constants import NAME_LEN, EMAIL_LEN, PHONE_LEN, NOTES_LEN
+from src.const.constants import NAME_LEN, EMAIL_LEN, PHONE_LEN, NOTES_LEN
 
 
 class Base(DeclarativeBase):
